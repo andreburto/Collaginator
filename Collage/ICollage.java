@@ -1,4 +1,4 @@
-package Collaginator;
+package Collage;
 
 import java.awt.*;
 import java.awt.image.*;

@@ -1,20 +1,24 @@
 import java.io.*;
 import java.util.*;
 import java.text.*;
+import java.awt.image.*;
 import javax.imageio.ImageIO;
 import Collage.*;
 
 public class Collaginator {
 	
-	static CollageSquares cs;
-	
 	public static void main(String[] args) {
 		// Map the command line arguments
 		Hashtable<String, String> p_args = ParseArgs(args);
+		// Dimensions of the collage 
 		int width = 0;
 		int height = 0;
-		String type = "";
+		// Other arguments
+		Types colltype = null;
 		String filename = "";
+		String filepath = "";
+		// The image created
+		BufferedImage the_collage;
 		
 		// Must map something
 		if (p_args.isEmpty()) { Error("Missing command line arguments"); }
@@ -37,12 +41,33 @@ public class Collaginator {
 		} else {
 			filename = GetFileName() + ".png";
 		}
+		// Look for a file path
+		if (p_args.containsKey("filepath")) {
+			filepath = (String) p_args.get("filepath");
+			filepath = filepath.replace("\\", "/");
+			filename = filepath + "/" + filename;
+		}
+		// Look for the type of collage to make; more types coming
+		if (p_args.containsKey("type")) {
+			String type = (String) p_args.get("type");
+			if (type.toLowerCase() == "square") { colltype = Types.TYPE_SQUARE; }
+		} else {
+			colltype = Types.TYPE_SQUARE;
+		}
 		
-		cs = new CollageSquares(width, height);
-		cs.Create();
+		// Create the collage based on type
+		switch(colltype) {
+			case TYPE_SQUARE:
+			default:
+				CollageSquares cs = new CollageSquares(width, height);
+				cs.Create();
+				the_collage = cs.GetImage();
+				break;
+		}
 		
+		// Save the file
 		try {
-			ImageIO.write(cs.GetImage(), "png", new File(filename));
+			ImageIO.write(the_collage, "png", new File(filename));
 		} catch (IOException e) {
 			Error("Could not save file.");
 		}

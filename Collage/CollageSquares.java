@@ -29,7 +29,7 @@ public class CollageSquares implements ICollage {
 		
 		// Initialize the image
 		BufferedImage n_img = new BufferedImage(this.width, this.height,
-												BufferedImage.TYPE_INT_ARGB);
+				BufferedImage.TYPE_INT_ARGB);
 		Graphics g_img = n_img.getGraphics();
 		g_img.setColor(Color.black);
 		
@@ -67,7 +67,7 @@ public class CollageSquares implements ICollage {
 				SetTakenArea(start.x, start.y, start.x + size, start.y + size);
 				g_img.setColor(c);
 				g_img.fillRect((int) start.x, (int) start.y,
-						       (int) start.x + size, (int) start.y + size); 
+						(int) start.x + size, (int) start.y + size); 
 			} else {
 				cont = false;
 			}

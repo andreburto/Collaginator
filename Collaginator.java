@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
-
+import java.text.*;
+import javax.imageio.ImageIO;
 import Collage.*;
 
 public class Collaginator {
@@ -13,6 +14,7 @@ public class Collaginator {
 		int width = 0;
 		int height = 0;
 		String type = "";
+		String filename = "";
 		
 		// Must map something
 		if (p_args.isEmpty()) { Error("Missing command line arguments"); }
@@ -29,9 +31,21 @@ public class Collaginator {
 		} else {
 			Error("No height passed");
 		}
+		// Look for a filename
+		if (p_args.containsKey("filename")) {
+			filename = (String) p_args.get("filename");
+		} else {
+			filename = GetFileName() + ".png";
+		}
 		
 		cs = new CollageSquares(width, height);
 		cs.Create();
+		
+		try {
+			ImageIO.write(cs.GetImage(), "png", new File(filename));
+		} catch (IOException e) {
+			Error("Could not save file.");
+		}
 		
 		System.exit(0);
 	}
@@ -78,6 +92,12 @@ public class Collaginator {
 		}
 		
 		return p_args;
+	}
+	
+	public static String GetFileName() {
+		Date dn = new Date();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+		return df.format(dn);
 	}
 	
 	public static void Error(String msg) {

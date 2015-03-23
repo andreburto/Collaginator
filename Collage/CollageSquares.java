@@ -64,9 +64,10 @@ public class CollageSquares implements ICollage {
 				if (IsAvailable()) {
 				Point start = GetOpenArea();
 				int size = GetRandomSize();
-				System.out.format("%s, %s - %s\n", start.x, start.y, size);
 				SetTakenArea(start.x, start.y, start.x + size, start.y + size);
-				//g_img.setColor(c);
+				g_img.setColor(c);
+				g_img.fillRect((int) start.x, (int) start.y,
+						       (int) start.x + size, (int) start.y + size); 
 			} else {
 				cont = false;
 			}
@@ -94,8 +95,8 @@ public class CollageSquares implements ICollage {
 	}
 	
 	private Point GetOpenArea() {
-		for (int wc = 0; wc < this.width; wc++) {
-			for (int hc = 0; hc < this.height; hc++) {
+		for (int hc = 0; hc < this.height; hc++) {
+			for (int wc = 0; wc < this.width; wc++) {
 				if (this.area[wc][hc] == 0) {
 					return new Point(wc, hc);
 				}
@@ -111,8 +112,8 @@ public class CollageSquares implements ICollage {
 		if (ew > this.width) { ew = this.width; }
 		if (eh > this.height) { eh = this.height; }  
 		// Loop
-		for (int sw = x; sw < ew; sw++) {
-			for (int sh = y; sh < eh; sh++) {
+		for (int sh = y; sh < eh; sh++) {
+			for (int sw = x; sw < ew; sw++) {
 				this.area[sw][sh] = 1;
 			}
 		}
@@ -120,8 +121,8 @@ public class CollageSquares implements ICollage {
 	
 	private void InitializeArea() {
 		this.area = new int[this.width][this.height];
-		for (int wc = 0; wc < this.width; wc++) {
-			for (int hc = 0; hc < this.height; hc++) {
+		for (int hc = 0; hc < this.height; hc++) {
+			for (int wc = 0; wc < this.width; wc++) {
 				this.area[wc][hc] = 0;
 			}
 		}

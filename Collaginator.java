@@ -14,7 +14,7 @@ public class Collaginator {
 		int width = 0;
 		int height = 0;
 		// Other arguments
-		Types colltype = null;
+		String colltype = null;
 		String filename = "";
 		String filepath = "";
 		// The image created
@@ -50,19 +50,24 @@ public class Collaginator {
 		// Look for the type of collage to make; more types coming
 		if (p_args.containsKey("type")) {
 			String type = (String) p_args.get("type");
-			if (type.toLowerCase() == "square") { colltype = Types.TYPE_SQUARE; }
+			colltype = type;
 		} else {
-			colltype = Types.TYPE_SQUARE;
+			colltype = "square";
 		}
 		
+		System.out.format("%s %s\n", p_args.get("type"), colltype);
+		
 		// Create the collage based on type
-		switch(colltype) {
-			case TYPE_SQUARE:
-			default:
-				CollageSquares cs = new CollageSquares(width, height);
-				cs.Create();
-				the_collage = cs.GetImage();
-				break;
+		if (colltype.equalsIgnoreCase("square2")) {
+			System.out.println("square2");
+			CollageSquares2 cs2 = new CollageSquares2(width, height);
+			cs2.Create();
+			the_collage = cs2.GetImage();
+		} else {
+			System.out.println("square");
+			CollageSquares cs = new CollageSquares(width, height);
+			cs.Create();
+			the_collage = cs.GetImage();
 		}
 		
 		// Save the file
@@ -85,7 +90,7 @@ public class Collaginator {
 		// Loop through the arguments
 		for (int c = 0; c < args.length; c++) {
 			if (args[c].startsWith("--")) {
-				String temp = args[c].substring(2);
+				String temp = args[c].substring(2).trim();
 				if (temp.contains("=") == false) {
 					last_arg = temp;
 				} else {
@@ -94,7 +99,7 @@ public class Collaginator {
 				}
 			}
 			else if (args[c].startsWith("-")) {
-				String temp = args[c].substring(1);
+				String temp = args[c].substring(1).trim();
 				if (temp.contains("=") == false) {
 					last_arg = temp;
 				} else {
@@ -105,7 +110,7 @@ public class Collaginator {
 			else
 			{
 				if (last_arg.isEmpty() == false) {
-					p_args.put((String) last_arg, args[c]);
+					p_args.put((String) last_arg, args[c].trim());
 					last_arg = "";
 				}
 			}

@@ -2,6 +2,7 @@ package Collage;
 
 import java.awt.*;
 import java.awt.image.*;
+import Collage.Colors;
 
 public class CollageSquares implements ICollage {
 
@@ -41,19 +42,19 @@ public class CollageSquares implements ICollage {
 			// Choose a color
 			switch(color_loop) {
 			case 0:
-				c = RandomRed();
+				c = Colors.RandomRed();
 				color_loop++;
 				break;
 			case 1:
-				c = RandomGreen();
+				c = Colors.RandomGreen();
 				color_loop++;
 				break;
 			case 2:
-				c = RandomBlue();
+				c = Colors.RandomBlue();
 				color_loop++;
 				break;
 			default:
-				c = RandomColor();
+				c = Colors.RandomColor();
 				color_loop = 0;				
 				break;
 			}
@@ -124,25 +125,5 @@ public class CollageSquares implements ICollage {
 				this.area[wc][hc] = 0;
 			}
 		}
-	}
-	
-	private Color RandomColor() {
-		return new Color(GetRandom(), GetRandom(), GetRandom());
-	}
-	
-	private Color RandomBlue() {
-		return new Color(0, 0, GetRandom());
-	}
-	
-	private Color RandomGreen() {
-		return new Color(0, GetRandom(), 0);
-	}
-	
-	private Color RandomRed() {
-		return new Color(GetRandom(), 0, 0);
-	}
-	
-	private int GetRandom() {
-		return (int)((Math.random()*125)*2)+5; 
 	}
 }

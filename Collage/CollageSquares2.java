@@ -2,6 +2,7 @@ package Collage;
 
 import java.awt.*;
 import java.awt.image.*;
+import Collage.Colors;
 
 public class CollageSquares2 implements ICollage {
 
@@ -26,8 +27,7 @@ public class CollageSquares2 implements ICollage {
 		InitializeArea();
 		
 		// Initialize the image
-		BufferedImage n_img = new BufferedImage(this.width, this.height,
-				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage n_img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics g_img = n_img.getGraphics();
 		g_img.setColor(Color.black);
 		
@@ -41,56 +41,37 @@ public class CollageSquares2 implements ICollage {
 			// Choose a color
 			switch(color_loop) {
 			case 0:
-				c = RandomRed();
+				c = Colors.RandomRed();
 				color_loop++;
 				break;
 			case 1:
-				c = RandomGreen();
+				c = Colors.RandomGreen();
 				color_loop++;
 				break;
 			case 2:
-				c = RandomBlue();
+				c = Colors.RandomBlue();
 				color_loop++;
 				break;
 			default:
-				c = RandomColor();
+				c = Colors.RandomColor();
 				color_loop = 0;				
 				break;
 			}
 			
 			// Draw a square
 			if (IsAvailable()) {
+				// Get the top coordinates
 				Point start = GetOpenArea();
-				int size = GetRandomSize();
 				int x = (int) start.x;
 				int y = (int) start.y;
-				int x2 = start.x + size;
-				int y2 = start.y + size;
-				while (IsAvailable(x, y) == false) {
-					System.out.format("1: %s, %s\n", x, y);
-					x += 1;
-					y += 1;
-				}
-				while (IsAvailable(x2, y2) == false) {
-					System.out.format("2: %s, %s\n", x2, y2);
-					x2 -= 1;
-					y2 -= 1;
-					if (x2 == x && y2 == y) {
-						x2 = x + 1;
-						y2 = y + 1;
-						break;
-					}
-				}
-				while (IsAvailable(x, y2) == false) {
-					System.out.format("3: %s, %s\n", x2, y2);
-					x += 1;
-					y2 -= 1;
-				}
-				while (IsAvailable(x2, y) == false) {
-					System.out.format("4: %s, %s\n", x2, y2);
-					x2 -= 1;
-					y += 1;
-				}
+				// Get the initial size
+				int size = GetRandomSize();
+				// Get the bottom coordinates
+				Point bottom = GetBottomCoords(x, y, size);
+				int x2 = (int) bottom.x;
+				int y2 = (int) bottom.y;
+				// Draw the square
+				System.out.format("%s, %s - %s, %s\n", x, y, x2, y2);
 				SetTakenArea(x, y, x2, y2);
 				g_img.setColor(c);
 				g_img.fillRect(x, y, x2, y2); 
@@ -120,14 +101,28 @@ public class CollageSquares2 implements ICollage {
 		return yesno;
 	}
 	
-	private boolean IsAvailable(int x, int y) {
-		if (x <= 0 || x == this.width - 1) { return true; }
-		if (y <= 0 || y == this.height - 1) { return true; }
-		if (this.area[x][y] == 1) {
-			return false;
-		} else {
-			return true;
+	private boolean IsAvailable(int x, int y, int x2, int y2) {
+		if (this.area[x][y] == 1) { return false; }
+		if (this.area[x2][y] == 1) { return false; }
+		if (this.area[x][y2] == 1) { return false; }
+		if (this.area[x2][y2] == 1) { return false; }
+		return true;
+	}
+	
+	private Point GetBottomCoords(int x, int y, int size) {
+		Point bottom = new Point();
+		int x2 = x;
+		int y2 = y;
+		for (int sc = 0; sc < size; sc++) {
+			x2 = x + sc;
+			y2 = y + sc;
+			if (x2 < this.width && y2 < this.height) {
+				bottom.x = x2;
+				bottom.y = y2;
+			}
+			if (this.area[x2][y2] == 1) { break; }
 		}
+		return bottom;
 	}
 	
 	private Point GetOpenArea() {
@@ -164,23 +159,5 @@ public class CollageSquares2 implements ICollage {
 		}
 	}
 	
-	private Color RandomColor() {
-		return new Color(GetRandom(), GetRandom(), GetRandom());
-	}
-	
-	private Color RandomBlue() {
-		return new Color(0, 0, GetRandom());
-	}
-	
-	private Color RandomGreen() {
-		return new Color(0, GetRandom(), 0);
-	}
-	
-	private Color RandomRed() {
-		return new Color(GetRandom(), 0, 0);
-	}
-	
-	private int GetRandom() {
-		return (int)((Math.random()*125)*2)+5; 
-	}
+
 }

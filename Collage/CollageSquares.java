@@ -2,8 +2,6 @@ package Collage;
 
 import java.awt.*;
 import java.awt.image.*;
-import Collage.Colors;
-import Collage.CollageArray;
 
 public class CollageSquares implements ICollage {
 
@@ -81,6 +79,5 @@ public class CollageSquares implements ICollage {
 	
 	private int GetRandomSize() {
 		return (int)(Math.random()*this.MAX_SIZE)+1;
-	}
-	
+	}	
 }

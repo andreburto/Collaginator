@@ -3,15 +3,14 @@ package Collage;
 import java.awt.*;
 import java.awt.image.*;
 import Collage.Colors;
+import Collage.CollageArray;
 
 public class CollageSquares implements ICollage {
 
-    BufferedImage f_img;
-    int width;
-    int height;
-    int MAX_SIZE;
-    int[][] area;
-    boolean cont;
+    private BufferedImage f_img;
+    private int width;
+    private int height;
+    private int MAX_SIZE;
 
     public CollageSquares(int width, int height) {
     	this.width = width;
@@ -24,16 +23,15 @@ public class CollageSquares implements ICollage {
 		int color_loop = 0;
 		
 		// Initialize the area array to keep up with used space
-		InitializeArea();
+		CollageArray ca = new CollageArray(this.width, this.height);
 		
 		// Initialize the image
-		BufferedImage n_img = new BufferedImage(this.width, this.height,
-				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage n_img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics g_img = n_img.getGraphics();
 		g_img.setColor(Color.black);
 		
 		// Set cont to true to start loop
-		cont = true;
+		boolean cont = true;
 		
 		// Loop while true
 		while(cont) {
@@ -60,13 +58,12 @@ public class CollageSquares implements ICollage {
 			}
 			
 			// Draw a square
-				if (IsAvailable()) {
-				Point start = GetOpenArea();
+				if (ca.IsAvailable()) {
+				Point start = ca.GetOpenArea();
 				int size = GetRandomSize();
-				SetTakenArea(start.x, start.y, start.x + size, start.y + size);
+				ca.SetTakenArea(start.x, start.y, start.x + size, start.y + size);
 				g_img.setColor(c);
-				g_img.fillRect((int) start.x, (int) start.y,
-						(int) start.x + size, (int) start.y + size); 
+				g_img.fillRect((int) start.x, (int) start.y, (int) start.x + size, (int) start.y + size); 
 			} else {
 				cont = false;
 			}
@@ -86,44 +83,4 @@ public class CollageSquares implements ICollage {
 		return (int)(Math.random()*this.MAX_SIZE)+1;
 	}
 	
-	private boolean IsAvailable() {
-		boolean yesno = true;
-		Point isfree = GetOpenArea();
-		if (isfree == null) { yesno = false; }
-		return yesno;
-	}
-	
-	private Point GetOpenArea() {
-		for (int hc = 0; hc < this.height; hc++) {
-			for (int wc = 0; wc < this.width; wc++) {
-				if (this.area[wc][hc] == 0) {
-					return new Point(wc, hc);
-				}
-			}
-		}
-		return null;
-	}
-	
-	private void SetTakenArea(int x, int y, int w, int h) {
-		int ew = x + w;
-		int eh = y + h;
-		// Check height and width
-		if (ew > this.width) { ew = this.width; }
-		if (eh > this.height) { eh = this.height; }  
-		// Loop
-		for (int sh = y; sh < eh; sh++) {
-			for (int sw = x; sw < ew; sw++) {
-				this.area[sw][sh] = 1;
-			}
-		}
-	}
-	
-	private void InitializeArea() {
-		this.area = new int[this.width][this.height];
-		for (int hc = 0; hc < this.height; hc++) {
-			for (int wc = 0; wc < this.width; wc++) {
-				this.area[wc][hc] = 0;
-			}
-		}
-	}
 }

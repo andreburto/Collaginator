@@ -7,7 +7,7 @@ import Collage.*;
 
 public class Collaginator {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// Map the command line arguments
 		Hashtable<String, String> p_args = ParseArgs(args);
 		// Dimensions of the collage 
@@ -21,19 +21,19 @@ public class Collaginator {
 		BufferedImage the_collage;
 		
 		// Must map something
-		if (p_args.isEmpty()) { Error("Missing command line arguments"); }
+		if (p_args.isEmpty()) { throw new Exception("Missing command line arguments"); }
 		
 		// Make sure all needed arguments are here: look width first
 		if (p_args.containsKey("width")) {
 			width = Integer.parseInt(p_args.get("width"));
 		} else {
-			Error("No width passed");
+			throw new Exception("No width passed");
 		}
 		// Look for height
 		if (p_args.containsKey("height")) {
 			height = Integer.parseInt(p_args.get("height"));
 		} else {
-			Error("No height passed");
+			throw new Exception("No height passed");
 		}
 		// Look for a filename
 		if (p_args.containsKey("filename")) {
@@ -63,6 +63,13 @@ public class Collaginator {
 			CollageSquares2 cs2 = new CollageSquares2(width, height);
 			cs2.Create();
 			the_collage = cs2.GetImage();
+		} else if (colltype.equalsIgnoreCase("yvonne")) { 
+			System.out.println("yvonne");
+			CollageYvonne cy = new CollageYvonne(width, height);
+			cy.Create();
+			the_collage = cy.GetImage();
+			if (the_collage == null)
+				throw new Exception("CollageYvonne failed.");
 		} else {
 			System.out.println("square");
 			CollageSquares cs = new CollageSquares(width, height);
@@ -74,7 +81,7 @@ public class Collaginator {
 		try {
 			ImageIO.write(the_collage, "png", new File(filename));
 		} catch (IOException e) {
-			Error("Could not save file.");
+			throw new Exception("Could not save file.");
 		}
 		
 		System.exit(0);
@@ -128,11 +135,5 @@ public class Collaginator {
 		Date dn = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 		return df.format(dn);
-	}
-	
-	public static void Error(String msg) {
-		if (msg.isEmpty()) { msg = "Missing message"; }
-		System.out.format("ERROR: %s\n", msg);
-		System.exit(1);
 	}
 }

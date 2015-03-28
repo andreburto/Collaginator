@@ -5,6 +5,8 @@ import java.awt.image.*;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Random;
+
 import javax.imageio.*;
 import javax.xml.parsers.*;
 
@@ -32,6 +34,7 @@ public class CollageYvonne implements ICollage {
     private int width;
     private int height;
     private String linkUrl = "http://pics.mytrapster.com/yvonne-list.php";
+    private boolean rand = false;
 
     public CollageYvonne(int width, int height) {
     	this.width = width;
@@ -52,9 +55,7 @@ public class CollageYvonne implements ICollage {
 		// Set cont to true to start loop
 		boolean cont = true;
 		
-		// Load the image
-		
-		
+		// Load the images
 		try {
 			ArrayList<ImgYvonne> pics = ParseXML(LoadXML(linkUrl));
 			int picCounter = 0;
@@ -65,18 +66,23 @@ public class CollageYvonne implements ICollage {
 				if (ca.IsAvailable()) {
 					Thread.sleep(1000L);
 					Point start = ca.GetOpenArea();					
-					ImgYvonne iy = pics.get(picCounter);
+					ImgYvonne iy;
+					
+					if (this.rand == false) {
+						iy = pics.get(picCounter);
+						picCounter++;
+						if (picCounter == pics.size()) { picCounter = 0; }
+					} else {
+						iy = RandomPic(pics);
+					}
 					
 					try {
 						BufferedImage t_img = ImageIO.read(new URL(iy.thumb));
 						g_img.drawImage(t_img, start.x, start.y, t_img.getWidth(), t_img.getHeight(), Color.black, null);
-						ca.SetTakenArea(start.x, start.y, start.x + t_img.getHeight(), start.y + t_img.getHeight());
+						ca.SetTakenArea(start.x, start.y, t_img.getWidth(), t_img.getHeight());
 					} catch (Exception e) {
 						throw new Exception(e);
 					}
-					
-					picCounter++;
-					if (picCounter == pics.size()) { picCounter = 0; }
 				} else {
 					cont = false;
 				}
@@ -95,8 +101,17 @@ public class CollageYvonne implements ICollage {
 		return this.f_img;
 	}
 	
+	public void setRandom(boolean yn) {
+		this.rand = yn;
+	}
+	
+	private ImgYvonne RandomPic(ArrayList<ImgYvonne> pics) {
+		Random r = new Random();
+		return pics.get(r.nextInt(pics.size() - 1));
+	}
+	
 	// Copypasta: http://stackoverflow.com/questions/4328711/read-url-to-string-in-few-lines-of-java-code
-	public String LoadXML(String url) throws Exception {
+	private String LoadXML(String url) throws Exception {
 		URL website = new URL(url);
 		URLConnection connection = website.openConnection();
 		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -110,7 +125,7 @@ public class CollageYvonne implements ICollage {
 	}
 	
 	
-	public ArrayList<ImgYvonne> ParseXML(String xml) throws ParserConfigurationException, SAXException, Exception {
+	private ArrayList<ImgYvonne> ParseXML(String xml) throws ParserConfigurationException, SAXException, Exception {
 		ArrayList<ImgYvonne> pics = new ArrayList<ImgYvonne>();
 		
 		InputSource is = new InputSource(new StringReader(xml));

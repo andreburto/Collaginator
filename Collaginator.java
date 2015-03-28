@@ -17,6 +17,7 @@ public class Collaginator {
 		String colltype = null;
 		String filename = "";
 		String filepath = "";
+		boolean rand = false;
 		// The image created
 		BufferedImage the_collage;
 		
@@ -54,24 +55,25 @@ public class Collaginator {
 		} else {
 			colltype = "square";
 		}
-		
-		System.out.format("%s %s\n", p_args.get("type"), colltype);
+		if (p_args.containsKey("random")) {
+			String r = (String) p_args.get("random");
+			if (r.toLowerCase().startsWith("y"))
+				rand = true;
+		}
 		
 		// Create the collage based on type
 		if (colltype.equalsIgnoreCase("square2")) {
-			System.out.println("square2");
 			CollageSquares2 cs2 = new CollageSquares2(width, height);
 			cs2.Create();
 			the_collage = cs2.GetImage();
 		} else if (colltype.equalsIgnoreCase("yvonne")) { 
-			System.out.println("yvonne");
 			CollageYvonne cy = new CollageYvonne(width, height);
+			cy.setRandom(rand);
 			cy.Create();
 			the_collage = cy.GetImage();
 			if (the_collage == null)
 				throw new Exception("CollageYvonne failed.");
 		} else {
-			System.out.println("square");
 			CollageSquares cs = new CollageSquares(width, height);
 			cs.Create();
 			the_collage = cs.GetImage();
